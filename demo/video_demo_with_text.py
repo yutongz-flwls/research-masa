@@ -9,6 +9,8 @@ import resource
 import argparse
 import cv2
 import tqdm
+import pickle
+import numpy as np
 
 import torch
 from torch.multiprocessing import Pool, set_start_method
@@ -19,6 +21,7 @@ from mmengine.utils import track_iter_progress
 from mmdet.apis import init_detector
 from mmdet.registry import VISUALIZERS
 from mmcv.ops.nms import batched_nms
+from mmdet.structures import DetDataSample
 
 import masa
 from masa.apis import inference_masa, init_masa, inference_detector, build_test_pipeline
@@ -67,6 +70,7 @@ def parse_args():
     parser.add_argument('--score-thr', type=float, default=0.2, help='Bbox score threshold')
     parser.add_argument('--out', type=str, help='Output video file')
     parser.add_argument('--save_dir', type=str, help='Output for video frames')
+    parser.add_argument('--det_dir', type=str, help='Choose detection result dir')
     parser.add_argument('--texts', help='text prompt')
     parser.add_argument('--line_width', type=int, default=5, help='Line width')
     parser.add_argument('--unified', action='store_true', help='Use unified model, which means the masa adapter is built upon the detector model.')
@@ -161,6 +165,16 @@ def main():
                                             text_prompt=texts,
                                             test_pipeline=test_pipeline,
                                             fp16=args.fp16)
+            elif args.detector_type == 'face':
+                with open(f"{args.det_dir}/faces_5_landmarks_2d_default_result.pkl", "rb") as f:
+                    bboxes = pickle.load(f)
+                with open(f"{args.det_dir}/faces_box_confidence_default_result.pkl", "rb") as f:
+                    scores = pickle.load(f)
+                labels = np.ones(scores.shape)
+                result = DetDataSample()
+                result.pred_instances.bboxes = bboxes
+                result.pred_instances.scores = scores
+                result.pred_instances.labels = labels
 
             # Perfom inter-class NMS to remove nosiy detections
             det_bboxes, keep_idx = batched_nms(boxes=result.pred_instances.bboxes,

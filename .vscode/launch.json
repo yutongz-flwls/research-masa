@@ -1,0 +1,36 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "demo",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "demo/video_demo_with_text.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": [
+                "/Users/yutongzheng/Desktop/Projects/flwls-face-off-orchestration/data/Occlusions/Lady_Like_FTR_2398_LRCLfeLsRs_LtRt.mp4",
+                "--out",
+                "demo_outputs/Lady_Like_FTR_2398_LRCLfeLsRs_LtRt.mp4",
+                "--det_config",
+                "projects/mmdet_configs/yolox/yolox_x_8xb8-300e_coco.py",
+                "--det_checkpoint",
+                "saved_models/pretrain_weights/yolox_x_8x8_300e_coco_20211126_140254-1ef88d67.pth",
+                "--masa_config",
+                "configs/masa-one/masa_r50_plug_and_play.py",
+                "--masa_checkpoint",
+                "saved_models/masa_models/masa_r50.pth",
+                "--det_dir",
+                "/Users/yutongzheng/Desktop/Projects/flwls-face-off-orchestration/run_storage/Occlusions/Lady_Like_FTR_2398_LRCLfeLsRs_LtRt",
+                "--score-thr",
+                "0.3",
+                "--show_fps",
+                "--detector_type",
+                "face"
+            ]
+        }
+    ]
+}
